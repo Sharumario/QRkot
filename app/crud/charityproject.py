@@ -1,4 +1,4 @@
-from typing import Dict, Optional, List
+from typing import Optional, List
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
@@ -26,20 +26,12 @@ class CharityProjectCrud(CRUDBase):
     async def get_projects_by_completion_rate(
             self,
             session: AsyncSession,
-    ) -> List[Dict[str, str]]:
+    ) -> List[CharityProject]:
         charity_projects = await session.execute(
             select(CharityProject).where(CharityProject.fully_invested)
         )
         charity_projects = charity_projects.scalars().all()
-        projects = sorted([
-            {
-                'name': project.name,
-                'collection time': project.close_date - project.create_date,
-                'description': project.description
-            } for project in charity_projects
-        ], key=lambda project: project['collection time']
-        )
-        return projects
+        return charity_projects
 
     async def update(
         self,

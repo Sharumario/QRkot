@@ -14,6 +14,7 @@ from app.services.google_api import (
 
 
 router = APIRouter()
+GOOGLE_SPREADSHEETS_URL = 'https://docs.google.com/spreadsheets/d/'
 
 
 @router.post(
@@ -26,11 +27,13 @@ async def get_report(
         wrapper_services: Aiogoogle = Depends(get_service)
 
 ):
-    spreadsheetid = await spreadsheets_create(wrapper_services)
-    await set_user_permissions(spreadsheetid, wrapper_services)
+    spreadsheet_id = await spreadsheets_create(wrapper_services)
+    await set_user_permissions(spreadsheet_id, wrapper_services)
     await spreadsheets_update_value(
-        spreadsheetid,
-        await charity_project_crud.get_projects_by_completion_rate(session),
+        spreadsheet_id,
+        await charity_project_crud.get_projects_by_completion_rate(
+            session
+        ),
         wrapper_services
     )
-    return {'url': f'https://docs.google.com/spreadsheets/d/{spreadsheetid}'}
+    return {'url': GOOGLE_SPREADSHEETS_URL + spreadsheet_id}
