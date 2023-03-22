@@ -44,14 +44,15 @@ class CRUDBase:
         db_objs = await session.execute(select(self.model))
         return db_objs.scalars().all()
 
-    async def get_investment_active(
+    async def get_investment_active_or_no_active(
             self,
             session: AsyncSession,
-            model: Model
+            model: Model,
+            no_active: bool = False
     ) -> Model:
         db_obj = await session.execute(
             select(model).where(
-                model.fully_invested == 0
+                model.fully_invested == no_active
             )
         )
         return db_obj.scalars().all()

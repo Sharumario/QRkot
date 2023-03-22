@@ -47,8 +47,10 @@ async def create_new_charity_project(
         session,
         commit=False
     )
-    model_objects = await charity_project_crud.get_investment_active(
-        session, Donation
+    model_objects = (
+        await charity_project_crud.get_investment_active_or_no_active(
+            session, Donation
+        )
     )
     if model_objects:
         session.add_all(invested_project(charity_project, model_objects))
@@ -105,8 +107,10 @@ async def partially_update_charity_project(
     charity_project_obj = await charity_project_crud.update(
         charity_project_obj, charity_project_obj_in, session, commit=False
     )
-    model_objects = await charity_project_crud.get_investment_active(
-        session, Donation
+    model_objects = (
+        await charity_project_crud.get_investment_active_or_no_active(
+            session, Donation
+        )
     )
     if model_objects:
         session.add_all(invested_project(charity_project_obj, model_objects))

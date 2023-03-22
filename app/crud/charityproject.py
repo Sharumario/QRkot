@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
@@ -22,16 +22,6 @@ class CharityProjectCrud(CRUDBase):
         )
         charity_project_id = charity_project_id.scalars().first()
         return charity_project_id
-
-    async def get_projects_by_completion_rate(
-            self,
-            session: AsyncSession,
-    ) -> List[CharityProject]:
-        charity_projects = await session.execute(
-            select(CharityProject).where(CharityProject.fully_invested)
-        )
-        charity_projects = charity_projects.scalars().all()
-        return charity_projects
 
     async def update(
         self,

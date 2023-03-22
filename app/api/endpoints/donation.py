@@ -39,8 +39,10 @@ async def create_donation(
     donation = await donation_crud.create(
         donation, session, user, commit=False
     )
-    model_objects = await donation_crud.get_investment_active(
-        session, CharityProject
+    model_objects = (
+        await donation_crud.get_investment_active_or_no_active(
+            session, CharityProject
+        )
     )
     if model_objects:
         session.add_all(invested_project(donation, model_objects))
